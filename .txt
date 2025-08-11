@@ -1,0 +1,180 @@
+<?php
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Replace with your actual login validation logic
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    if ($username === 'admin' && $password === 'password') {
+        // Set session to logged in
+        $_SESSION['user_id'] = 1; // Example user ID
+        $_SESSION['is_logged_in'] = true;
+
+        // Redirect to the original page or default to index.php
+        $redirectPage = $_SESSION['redirect_to'] ?? 'index.php';
+        unset($_SESSION['redirect_to']); // Clear the session variable
+        header("Location: $redirectPage");
+        exit();
+    } else {
+        $error = "Invalid username or password.";
+    }
+}
+?>
+<form method="POST" action="">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+</form>
+<?php if (isset($error)) echo "<p>$error</p>"; ?>
+
+
+
+<!-- <script>
+    // Form and alert elements
+    const form = document.getElementById('property-form'); // Replace with your form's actual ID
+    const submitButton = document.getElementById('submit-button'); // Optional, for disabling during submission
+    const successMessage = document.getElementById('success-message'); // Success alert
+    const errorMessage = document.getElementById('error-message'); // Error alert
+
+    form.addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Ensure at least one file is selected
+    if (selectedFiles.length === 0) {
+        uploadMessage.innerText = "Please select at least one file to upload.";
+        return;
+    }
+
+    // Disable the submit button to avoid multiple submissions
+    submitButton.disabled = true;
+
+    // Reset alert messages
+    successMessage.style.display = 'none';
+    errorMessage.style.display = 'none';
+
+    // Create FormData and append selected images
+    const formData = new FormData(form);
+    selectedFiles.forEach((file, index) => {
+        formData.append('uploaded_images[]', file, file.name);
+    });
+
+    // Send the POST request with the form data and files
+    fetch('submit-property.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json()) // Assuming server response is plain text
+    .then(data => {
+        if (data.status === "success") {
+            successMessage.style.display = 'block';
+            setTimeout(function () {
+                window.location.href = "my-properties.php";
+            }, 2000);
+        } else {
+            errorMessage.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error('Error submitting form:', error);
+        errorMessage.style.display = 'block';
+    })
+    .finally(() => {
+        submitButton.disabled = false;
+    });
+});
+
+
+    // Image file handling script
+    let selectedFiles = [];
+    const maxSizeMB = 2;
+    const maxFiles = 5;
+    const previewContainer = document.getElementById("previewContainer");
+    const uploadMessage = document.getElementById("uploadMessage");
+    const dropZone = document.getElementById("dropZone");
+
+    function updateFilePrompt() {
+        const prompt = document.getElementById("uploadPrompt");
+        prompt.innerText = selectedFiles.length > 0 
+            ? `${selectedFiles.length} file(s) selected` 
+            : "Drag & drop images here or click to upload (Max 5 files)";
+    }
+
+    document.getElementById("imageUpload").addEventListener("change", function(event) {
+        handleFiles(event.target.files);
+        event.target.value = ""; // Clear input to allow re-selection
+    });
+
+    dropZone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropZone.classList.add("drag-over");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("drag-over");
+    });
+
+    dropZone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dropZone.classList.remove("drag-over");
+        handleFiles(event.dataTransfer.files);
+    });
+
+    function handleFiles(files) {
+        const newFiles = Array.from(files);
+        uploadMessage.innerText = "";
+
+        if (selectedFiles.length + newFiles.length > maxFiles) {
+            uploadMessage.innerText = `Please select up to ${maxFiles} files in total.`;
+            return;
+        }
+
+        newFiles.forEach(file => {
+            if (file.size > maxSizeMB * 1024 * 1024) {
+                uploadMessage.innerText = `Each file must be smaller than ${maxSizeMB} MB.`;
+            } else {
+                selectedFiles.push(file);
+                previewImage(file);
+            }
+        });
+        
+        updateFilePrompt();
+    }
+
+    function previewImage(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgContainer = document.createElement("div");
+            imgContainer.className = "image-preview";
+            
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.width = "100px";
+            img.style.margin = "5px";
+            
+            const removeButton = document.createElement("button");
+            removeButton.innerText = "Remove";
+            removeButton.className = "remove-button";
+            removeButton.addEventListener("click", function() {
+                removeImage(file);
+                imgContainer.remove();
+            });
+            
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(removeButton);
+            previewContainer.appendChild(imgContainer);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removeImage(file) {
+        selectedFiles = selectedFiles.filter(f => f !== file);
+        updateFilePrompt();
+    }
+
+    dropZone.addEventListener("click", function() {
+        document.getElementById("imageUpload").click();
+    });
+
+
+</script> -->
